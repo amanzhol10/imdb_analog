@@ -1,8 +1,8 @@
 FROM php:8.4-fpm
 
-RUN cp .env.example .env && \
-    touch database/database.sqlite && \
-    php artisan key:generate --no-interaction
+RUN apt-get update && apt-get install -y \
+    libzip-dev zip unzip curl git nginx supervisor gettext-base \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -12,9 +12,9 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
 
-RUN cp .env.example .env && \
-    sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/' .env && \
+RUN touch database/database.sqlite && \
     php artisan key:generate --no-interaction
+
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 COPY docker/nginx.conf /etc/nginx/sites-available/default
