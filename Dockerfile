@@ -21,4 +21,4 @@ COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 9000
 
-CMD ["/bin/bash", "-c", "php artisan config:clear && php artisan cache:clear && php artisan optimize:clear && php artisan migrate --force && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/bin/bash", "-c", "printenv && php artisan config:clear && php artisan cache:clear && php artisan optimize:clear && php artisan migrate --force && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
