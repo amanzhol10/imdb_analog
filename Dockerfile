@@ -1,8 +1,9 @@
 FROM php:8.4-fpm
 
-RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip curl git nginx supervisor gettext-base \
-    && docker-php-ext-install pdo pdo_mysql zip
+RUN cp .env.example .env && \
+    sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/' .env && \
+    sed -i 's/# DB_HOST=127.0.0.1/DB_HOST=127.0.0.1/' .env && \
+    APP_KEY=base64:$(openssl rand -base64 32) sed -i "s/APP_KEY=/APP_KEY=base64:$(openssl rand -base64 32)/" .env
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
