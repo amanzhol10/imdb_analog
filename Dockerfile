@@ -10,9 +10,9 @@ WORKDIR /var/www/html
 
 COPY . .
 
+RUN rm -f .env
+
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
-
-
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
