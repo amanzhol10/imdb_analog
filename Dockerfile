@@ -12,8 +12,7 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
 
-RUN touch database/database.sqlite && \
-    php artisan key:generate --no-interaction
+
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
