@@ -12,7 +12,7 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
 
-RUN cp .env.example .env && php artisan key:generate
+RUN cp .env.example .env && sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/' .env && php artisan key:generate --no-interaction
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
