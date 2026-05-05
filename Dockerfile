@@ -1,10 +1,8 @@
-FROM php:8.4-apache
+FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip curl git \
-    && docker-php-ext-install pdo pdo_mysql zip \
-    && a2dismod mpm_event mpm_worker \
-    && a2enmod mpm_prefork rewrite
+    libzip-dev zip unzip curl git nginx \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -14,10 +12,10 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
 
-RUN chown -R www-data:www-data /var/www/html/storage bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+COPY docker/nginx.conf /etc/nginx/sites-available/default
 
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+EXPOSE 80
 
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+CMD service nginx start && php-fpm
